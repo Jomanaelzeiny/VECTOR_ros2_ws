@@ -2,14 +2,15 @@
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
   <name>vector_twin_tools</name>
-  <version>0.0.2</version>
-  <description>VECTOR digital twin ROS2 tools: fake camera publisher, twin pose listener, manual control</description>
+  <version>0.0.4</version>  <!-- CHANGED -->
+  <description>VECTOR digital twin ROS2 tools: fake camera publisher, twin pose listener, manual control, fake car serial, serial bridge</description>  <!-- CHANGED -->
   <maintainer email="jomana@todo.todo">jomana</maintainer>
   <license>TODO</license>
 
   <depend>rclpy</depend>
   <depend>geometry_msgs</depend>
-  <depend>std_msgs</depend>  <!-- CHANGED: needed for /f1r3/mode (std_msgs/String) -->
+  <depend>std_msgs</depend>
+  <exec_depend>python3-serial</exec_depend>  <!-- CHANGED: pyserial, used by serial_bridge -->
 
   <test_depend>ament_copyright</test_depend>
   <test_depend>ament_flake8</test_depend>
