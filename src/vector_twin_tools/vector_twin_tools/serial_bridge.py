@@ -4,7 +4,8 @@ F1R3 serial bridge: car (USB serial) <-> ROS2.
 
 Reads the low-level-control firmware telemetry line  DC,Servo,Speed,Yaw\n
 (see "Vector Low Level Control User Guide") and publishes it to ROS2.
-Works the same with the fake car (/tmp/f1r3_fake_serial) and the real car (/dev/ttyACM0).
+Works the same with the fake car (/tmp/f1r3_fake_serial), a car on USB (/dev/ttyACM0)
+and a car's Raspberry Pi over Wi-Fi (socket://<pi-ip>:9000).        # <<< CHANGED
 
 Publishes:
   /f1r3/car/telemetry       std_msgs/Float32MultiArray
@@ -17,7 +18,8 @@ Subscribes:
                             e.g. DC:F:150  DC:R:100  DC:S  SER:120  TL:R:100  IMU:CAL
 
 Parameters:
-  port         default /tmp/f1r3_fake_serial   (real car: /dev/ttyACM0)
+  port         default /tmp/f1r3_fake_serial   (USB car: /dev/ttyACM0,
+               Pi over Wi-Fi: socket://192.168.1.154:9000)        # <<< CHANGED
   baud         default 115200
   print_every  print every Nth telemetry line (0 = never)
 
@@ -34,6 +36,7 @@ from std_msgs.msg import Bool, Float32MultiArray, MultiArrayDimension, String
 STALE_WARN_S = 1.0        # warn if connected but no line for this long
 RECONNECT_PERIOD_S = 1.0  # how often to retry opening the port
 MAX_BUF = 4096            # guard against garbage without newlines
+READ_CHUNK = 4096         # max bytes read per tick                                   # <<< CHANGED
 
 
 class SerialBridge(Node):
@@ -70,7 +73,9 @@ class SerialBridge(Node):
             return
         self.next_open_try = now + RECONNECT_PERIOD_S
         try:
-            self.ser = serial.Serial(self.port, self.baud, timeout=0)
+            # serial_for_url accepts plain device paths AND URLs such as      # <<< CHANGED
+            # socket://192.168.1.154:9000 (serial.Serial() rejects URLs)      # <<< CHANGED
+            self.ser = serial.serial_for_url(self.port, self.baud, timeout=0)  # <<< CHANGED
             self.ser.reset_input_buffer()          # drop stale lines from before we connected
             self.buf = b''
             self.last_line_time = time.monotonic()
@@ -99,7 +104,10 @@ class SerialBridge(Node):
             return
 
         try:
-            data = self.ser.read(self.ser.in_waiting or 1)   # non-blocking (timeout=0)
+            # read everything available (non-blocking, timeout=0). Do NOT use      # <<< CHANGED
+            # in_waiting: on socket:// it only reports 0 or 1, which would read     # <<< CHANGED
+            # 1 byte per tick and make the twin lag further and further behind.    # <<< CHANGED
+            data = self.ser.read(READ_CHUNK)                                        # <<< CHANGED
         except (serial.SerialException, OSError) as e:
             self.disconnect(str(e))
             return
