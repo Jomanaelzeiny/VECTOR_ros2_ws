@@ -4,7 +4,7 @@ package_name = 'vector_twin_tools'
 
 setup(
     name=package_name,
-    version='0.0.6',                                                        # <<< CHANGED (was 0.0.5)
+    version='0.0.7',                                                        # <<< CHANGED (was 0.0.6)
     packages=find_packages(exclude=['test']),
     data_files=[
         ('share/ament_index/resource_index/packages',
@@ -15,7 +15,7 @@ setup(
     zip_safe=True,
     maintainer='jomana',
     maintainer_email='jomana@todo.todo',
-    description='VECTOR digital twin ROS2 tools: fake camera publisher, fake fleet publisher, twin pose listener, manual control, fake car serial, serial bridge, latency probe',  # <<< CHANGED (added latency probe)
+    description='VECTOR digital twin ROS2 tools: fake camera publisher, fake fleet publisher, twin pose listener, manual control, fake car serial, serial bridge, latency probe, twin host',  # <<< CHANGED (added twin host)
     license='TODO',
     tests_require=['pytest'],
     entry_points={
@@ -26,7 +26,8 @@ setup(
             'keyboard_teleop = vector_twin_tools.keyboard_teleop:main',
             'fake_car_serial = vector_twin_tools.fake_car_serial:main',
             'serial_bridge = vector_twin_tools.serial_bridge:main',
-            'latency_probe = vector_twin_tools.latency_probe:main',              # <<< CHANGED (new)
+            'latency_probe = vector_twin_tools.latency_probe:main',
+            'twin_host = vector_twin_tools.twin_host:main',                  # <<< CHANGED (new)
         ],
     },
 )
