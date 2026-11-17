@@ -28,6 +28,7 @@ setup(
             'serial_bridge = vector_twin_tools.serial_bridge:main',
             'latency_probe = vector_twin_tools.latency_probe:main',
             'twin_host = vector_twin_tools.twin_host:main',                  # <<< CHANGED (new)
+            'wheel_relay = vector_twin_tools.wheel_relay:main',              # <<< CHANGED (restored)
         ],
     },
 )
